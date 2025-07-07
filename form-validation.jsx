@@ -1,49 +1,55 @@
-import React, { Component } from "react";
+import React, { useState } from 'react';
 
-class TodoClass extends Component {
-  state = {
-    todos: [],
-    input: ""
+const UserForm = () => {
+  const [input, setInput] = useState({ username: '', useremail: '' });
+  const [validation, setValidation] = useState({});
+
+  const checkForm = () => {
+    const temp = {};
+    if (!input.username) temp.username = 'Name cannot be blank';
+    if (!input.useremail.includes('@')) temp.useremail = 'Invalid email';
+    return temp;
   };
 
-  // Use class property to autobind
-  handleInputChange = (e) => {
-    const { value } = e.target;
-    this.setState({ input: value });
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const errors = checkForm();
+    setValidation(errors);
+    if (!Object.keys(errors).length) {
+      alert('Submitted successfully!');
+    }
   };
 
-  addTodo = () => {
-    const input = this.state.input.trim();
-    if (!input) return;
-
-    this.setState((prevState) => ({
-      todos: [...prevState.todos, input],
-      input: "" // Clear input after adding
-    }));
-  };
-
-  render() {
-    const { input, todos } = this.state;
-
-    return (
+  return (
+    <form onSubmit={onSubmit}>
       <div>
+        <label>Full Name:</label>
         <input
           type="text"
-          placeholder="Add a todo"
-          value={input}
-          onChange={this.handleInputChange}
+          value={input.username}
+          onChange={(e) =>
+            setInput({ ...input, username: e.target.value })
+          }
         />
-        <button onClick={this.addTodo} disabled={!input.trim()}>
-          Add
-        </button>
-        <ul>
-          {todos.map((todo, index) => (
-            <li key={index}>{todo}</li>
-          ))}
-        </ul>
+        {validation.username && <p style={{ color: 'crimson' }}>{validation.username}</p>}
       </div>
-    );
-  }
-}
 
-export default TodoClass;
+      <div>
+        <label>Email ID:</label>
+        <input
+          type="email"
+          value={input.useremail}
+          onChange={(e) =>
+            setInput({ ...input, useremail: e.target.value })
+          }
+        />
+        {validation.useremail && <p style={{ color: 'crimson' }}>{validation.useremail}</p>}
+      </div>
+
+      <button type="submit">Send</button>
+    </form>
+  );
+};
+
+export default UserForm;
+
