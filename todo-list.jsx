@@ -1,35 +1,36 @@
-import React, { useState } from "react";
+import React, { Component } from 'react';
 
-function TodoFunction() {
-  const [todos, setTodos] = useState([]);
-  const [input, setInput] = useState("");
-
-  const addTodo = () => {
-    const trimmed = input.trim();
-    if (!trimmed) return;
-
-    setTodos((prev) => [...prev, trimmed]);
-    setInput("");
+class TaskManager extends Component {
+  state = {
+    taskList: [],
+    taskInput: ''
   };
 
-  return (
-    <div>
-      <input
-        type="text"
-        placeholder="Add a todo"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <button onClick={addTodo} disabled={!input.trim()}>
-        Add
-      </button>
-      <ul>
-        {todos.map((todo, idx) => (
-          <li key={idx}>{todo}</li>
-        ))}
-      </ul>
-    </div>
-  );
+  appendTask = () => {
+    const { taskInput, taskList } = this.state;
+    if (taskInput.trim()) {
+      this.setState({ taskList: [...taskList, taskInput], taskInput: '' });
+    }
+  };
+
+  render() {
+    return (
+      <div>
+        <input
+          placeholder="Enter Task"
+          value={this.state.taskInput}
+          onChange={(e) => this.setState({ taskInput: e.target.value })}
+        />
+        <button onClick={this.appendTask}>Add Task</button>
+        <ul>
+          {this.state.taskList.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
 }
 
-export default TodoFunction;
+export default TaskManager;
+
